@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "882573394231",
+    "project_id": "rvm-db-84468",
+    "storage_bucket": "rvm-db-84468.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882573394231:android:21128429b1791dc0bc1ab2",
+        "android_client_info": {
+          "package_name": "com.example.rvmsmart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCg2Yad3JKC6DrFlRGfbz7alfHEopui4W4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
