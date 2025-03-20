@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rvmsmart/domain/entities/repair_sheet_details.dart';
+import '../../domain/entities/repair_sheet_details.dart';
 
 import '../../infrastructure/services/firestore_repair_sheet_header_service.dart';
 import '../bloc/repair_sheet_header_bloc.dart';
+import '../pages/main/home.dart';
 
 class AssignmentDetailsView extends StatelessWidget {
   final String repairSheetHeaderId;
+  final int status;
   final RepairSheetDetails repairSheetDetails;
   const AssignmentDetailsView(
       {super.key,
+      required this.status,
       required this.repairSheetDetails,
       required this.repairSheetHeaderId});
 
@@ -18,8 +21,8 @@ class AssignmentDetailsView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RepairSheetHeaderBloc>(
-          create: (context) =>
-              RepairSheetHeaderBloc(FirestoreRepairSheetHeaderService(), 0),
+          create: (context) => RepairSheetHeaderBloc(
+              FirestoreRepairSheetHeaderService(), 0, DateTime.now()),
         )
       ],
       child: Column(
@@ -78,7 +81,10 @@ class AssignmentDetailsView extends StatelessWidget {
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold)),
                   title: Text(repairSheetDetails.spareParts![index].name),
-                  trailing: const Icon(Icons.delete, color: Colors.red),
+                  trailing: Text(
+                    'L. ${repairSheetDetails.spareParts![index].price.toString()}',
+                    style: const TextStyle(fontSize: 18, color: Colors.green),
+                  ),
                 );
               }),
           const SizedBox(height: 10),
@@ -139,18 +145,27 @@ class AssignmentDetailsView extends StatelessWidget {
                         ),
                       ))),
               const SizedBox(width: 10),
-              Expanded(child: Builder(builder: (context) {
-                return OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(width: 2.0, color: Colors.red),
-                    ),
-                    onPressed: () {
-                      BlocProvider.of<RepairSheetHeaderBloc>(context).add(
-                          UpdateStatusRepairSheetHeader(
-                              repairSheetHeaderId, 1));
-                    },
-                    child: const Text('Finalizar reparacion'));
-              }))
+              if (status == 1)
+                Expanded(child: Builder(builder: (context) {
+                  return OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(width: 2.0, color: Colors.red),
+                      ),
+                      onPressed: () {
+                        BlocProvider.of<RepairSheetHeaderBloc>(context).add(
+                            UpdateStatusRepairSheetHeader(
+                                repairSheetHeaderId, 2));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MyHomePage(
+                                    title: "Bienvenido",
+                                    index: 1,
+                                  )),
+                        );
+                      },
+                      child: const Text('Finalizar reparacion'));
+                }))
             ],
           )
         ],

@@ -14,7 +14,7 @@ RepairSheetDetails _$RepairSheetDetailsFromJson(Map<String, dynamic> json) =>
       serviceDescription: json['serviceDescription'] as String?,
       servicePrice: (json['servicePrice'] as num?)?.toInt(),
       spareParts: (json['spareParts'] as List<dynamic>?)
-          ?.map((e) => SparePart.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => SparePart.fromJson(e as Map<String, dynamic>, ""))
           .toList(),
       sparePartsPrice: (json['sparePartsPrice'] as num?)?.toInt(),
       discount: (json['discount'] as num?)?.toInt(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../widgets/information_card.dart';
 import 'new_spare_parts.dart';
 import '../../../domain/entities/spare_part.dart';
 import '../../../infrastructure/services/firestore_spare_part_service.dart';
@@ -15,6 +16,8 @@ class SparePartList extends StatefulWidget {
 
 class _SparePartListState extends State<SparePartList> {
   List<SparePart> searchedItems = [];
+  int counter = 0;
+  int keyCode = 0;
 
   void filter(String searchText, List<SparePart> items) {
     List<SparePart> results = [];
@@ -33,8 +36,16 @@ class _SparePartListState extends State<SparePartList> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    counter = 0;
+    keyCode = DateTime.now().millisecond.hashCode;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
+      key: Key(counter.toString() + keyCode.toString()),
       providers: [
         BlocProvider<SparePartBloc>(
             create: (context) => SparePartBloc(FirestoreSparePartService())
@@ -42,6 +53,10 @@ class _SparePartListState extends State<SparePartList> {
       ],
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           backgroundColor: const Color(0XFF0879A6),
           title: const Text(
             'Lista de repuestos',
@@ -79,7 +94,7 @@ class _SparePartListState extends State<SparePartList> {
                             pathImage: '',
                             title: 'Sin infromacion para mostrar',
                             message:
-                                'No existen cleintes creados o ocurrio algun error en la carga de datos')
+                                'No existen datos creados o ocurrio algun error en la carga de datos')
                         : Column(
                             children: [
                               Padding(
@@ -88,10 +103,23 @@ class _SparePartListState extends State<SparePartList> {
                                   onChanged: (value) {
                                     filter(value, sparePart);
                                   },
-                                  decoration: const InputDecoration(
-                                      labelText: "Buscar por nombre",
-                                      labelStyle:
-                                          TextStyle(color: Colors.black)),
+                                  decoration: InputDecoration(
+                                    suffixIcon: const Icon(Icons.search),
+                                    labelText: "Buscar por nombre",
+                                    fillColor: Colors.white,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               ListView.builder(
@@ -101,27 +129,26 @@ class _SparePartListState extends State<SparePartList> {
                                   itemCount: searchedItems.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return ListTile(
-                                        leading: Text((index + 1).toString(),
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                        title: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(searchedItems[index].name),
-                                            Text(searchedItems[index]
-                                                .price
-                                                .toString()),
-                                          ],
-                                        ),
-                                        trailing: IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            )));
+                                    return InformationCard(
+                                      name: searchedItems[index].name,
+                                      brand: searchedItems[index].brand,
+                                      price:
+                                          searchedItems[index].price.toString(),
+                                      descriptor: "Repuesto",
+                                      onDelete: () {
+                                        {
+                                          BlocProvider.of<SparePartBloc>(
+                                                  context)
+                                              .add(DeleteSparePart(
+                                                  searchedItems[index].docId!));
+                                          setState(() {
+                                            searchedItems = [];
+                                            counter++;
+                                            keyCode = DateTime.now().hashCode;
+                                          });
+                                        }
+                                      },
+                                    );
                                   }),
                             ],
                           );

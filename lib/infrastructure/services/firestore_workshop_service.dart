@@ -10,7 +10,7 @@ class FirestoreWorkShopService {
     return _workShopCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return Workshop.fromJson(data);
+        return Workshop.fromJson(data, doc.id);
       }).toList();
     });
   }
@@ -24,6 +24,8 @@ class FirestoreWorkShopService {
       'id': workshop.id,
       'name': workshop.name,
       'direction': workshop.direction,
+      'email': workshop.email,
+      'phone': workshop.phone,
     }).then((_) {
       debugPrint('success');
     }).catchError((_) {

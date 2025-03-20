@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/client.dart';
 import 'client_list.dart';
@@ -37,7 +38,10 @@ class _NewClientState extends State<NewClient> {
       appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const ClientList()),
+            ),
           ),
           backgroundColor: const Color(0XFF0879A6),
           title: const Text(
@@ -66,6 +70,10 @@ class _NewClientState extends State<NewClient> {
                   const SizedBox(height: 10),
                   TextField(
                     controller: phone,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Telefono',
@@ -82,6 +90,7 @@ class _NewClientState extends State<NewClient> {
                   const SizedBox(height: 10),
                   TextField(
                     controller: direction,
+                    maxLines: 4,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Direccion',

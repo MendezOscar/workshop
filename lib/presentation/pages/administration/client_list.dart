@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rvmsmart/domain/entities/client.dart';
-import 'package:rvmsmart/presentation/pages/administration/new_cliente.dart';
+import '../../../domain/entities/client.dart';
+import '../../widgets/information_card.dart';
+import 'new_client.dart';
 import '../../widgets/empty_state.dart';
 
 import '../../../infrastructure/services/firestore_clients_service.dart';
@@ -15,7 +16,16 @@ class ClientList extends StatefulWidget {
 }
 
 class _ClientListState extends State<ClientList> {
+  int counter = 0;
+  int keyCode = 0;
   List<Client> searchedItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    counter = 0;
+    keyCode = DateTime.now().millisecond.hashCode;
+  }
 
   void filter(String searchText, List<Client> items) {
     List<Client> results = [];
@@ -36,6 +46,7 @@ class _ClientListState extends State<ClientList> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
+      key: Key(counter.toString() + keyCode.toString()),
       providers: [
         BlocProvider<ClientBloc>(
             create: (context) =>
@@ -43,6 +54,10 @@ class _ClientListState extends State<ClientList> {
       ],
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           backgroundColor: const Color(0XFF0879A6),
           title: const Text(
             'Lista de clientes',
@@ -64,7 +79,7 @@ class _ClientListState extends State<ClientList> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
                 BlocBuilder<ClientBloc, ClientState>(builder: (context, state) {
@@ -80,7 +95,7 @@ class _ClientListState extends State<ClientList> {
                             pathImage: '',
                             title: 'Sin infromacion para mostrar',
                             message:
-                                'No existen cleintes creados o ocurrio algun error en la carga de datos')
+                                'No existen datos creados o ocurrio algun error en la carga de datos')
                         : Column(
                             children: [
                               Padding(
@@ -89,10 +104,23 @@ class _ClientListState extends State<ClientList> {
                                   onChanged: (value) {
                                     filter(value, clients);
                                   },
-                                  decoration: const InputDecoration(
-                                      labelText: "Buscar por nombre",
-                                      labelStyle:
-                                          TextStyle(color: Colors.black)),
+                                  decoration: InputDecoration(
+                                    suffixIcon: const Icon(Icons.search),
+                                    labelText: "Buscar por nombre",
+                                    fillColor: Colors.white,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               ListView.builder(
@@ -102,26 +130,24 @@ class _ClientListState extends State<ClientList> {
                                   itemCount: searchedItems.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return ListTile(
-                                        leading: Text((index + 1).toString(),
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                        title: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(searchedItems[index].name),
-                                            Text(searchedItems[index].phone ??
-                                                ""),
-                                          ],
-                                        ),
-                                        trailing: IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            )));
+                                    return InformationCard(
+                                      name: searchedItems[index].name,
+                                      email: searchedItems[index].email,
+                                      phone: searchedItems[index].phone,
+                                      descriptor: "Cliente",
+                                      onDelete: () {
+                                        {
+                                          BlocProvider.of<ClientBloc>(context)
+                                              .add(DeleteClient(
+                                                  searchedItems[index].docId!));
+                                          setState(() {
+                                            searchedItems = [];
+                                            counter++;
+                                            keyCode = DateTime.now().hashCode;
+                                          });
+                                        }
+                                      },
+                                    );
                                   }),
                             ],
                           );

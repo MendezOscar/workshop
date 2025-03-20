@@ -2,16 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rvmsmart/domain/entities/client.dart';
-import 'package:rvmsmart/domain/entities/mechanic.dart';
-import 'package:rvmsmart/domain/entities/repair_sheet_header.dart';
-import 'package:rvmsmart/infrastructure/services/firestore_repair_sheet_header_service.dart';
-import 'package:rvmsmart/presentation/bloc/client_bloc.dart';
+import '../../../domain/entities/client.dart';
+import '../../../domain/entities/mechanic.dart';
+import '../../../domain/entities/repair_sheet_header.dart';
+import '../../../infrastructure/services/firestore_repair_sheet_header_service.dart';
+import '../../bloc/client_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:rvmsmart/presentation/bloc/mechanic_bloc.dart';
-import 'package:rvmsmart/presentation/bloc/repair_sheet_header_bloc.dart';
-import 'package:rvmsmart/presentation/bloc/workshop_bloc.dart';
-import 'package:rvmsmart/presentation/pages/main/home.dart';
+import '../../bloc/mechanic_bloc.dart';
+import '../../bloc/repair_sheet_header_bloc.dart';
+import '../../bloc/workshop_bloc.dart';
+import '../main/home.dart';
 
 import '../../../domain/entities/workshop.dart';
 import '../../../infrastructure/services/firestore_clients_service.dart';
@@ -74,8 +74,8 @@ class _NewAssignmentState extends State<NewAssignment> {
             create: (context) => MechanicBloc(FirestoreMechanicsService())
               ..add(LoadMechanics())),
         BlocProvider<RepairSheetHeaderBloc>(
-          create: (context) =>
-              RepairSheetHeaderBloc(FirestoreRepairSheetHeaderService(), 0),
+          create: (context) => RepairSheetHeaderBloc(
+              FirestoreRepairSheetHeaderService(), 0, DateTime.now()),
         ),
         BlocProvider<WorkshopBloc>(
             create: (context) =>
@@ -90,6 +90,7 @@ class _NewAssignmentState extends State<NewAssignment> {
                         MaterialPageRoute(
                             builder: (context) => const MyHomePage(
                                   title: "Bienvenido",
+                                  index: 1,
                                 )),
                       )),
               backgroundColor: const Color(0XFF0879A6),
@@ -265,12 +266,12 @@ class _NewAssignmentState extends State<NewAssignment> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            //Navigator.pop(context, 0);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const MyHomePage(
                                         title: "Bienvenido",
+                                        index: 1,
                                       )),
                             );
                           },
@@ -300,6 +301,7 @@ class _NewAssignmentState extends State<NewAssignment> {
                                 MaterialPageRoute(
                                     builder: (context) => const MyHomePage(
                                           title: "Bienvenido",
+                                          index: 1,
                                         )),
                               );
                             },

@@ -10,7 +10,7 @@ class FirestoreSparePartService {
     return _sparePartCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return SparePart.fromJson(data);
+        return SparePart.fromJson(data, doc.id);
       }).toList();
     });
   }

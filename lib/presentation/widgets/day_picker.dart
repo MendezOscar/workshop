@@ -7,9 +7,14 @@ import 'day_picker_moal_button_sheet.dart';
 
 class DayPicker extends StatefulWidget {
   final List<DayPickerModel> days;
+  final DateTime? selectedDate;
   final void Function(DayPickerModel) onChanged;
 
-  const DayPicker({super.key, required this.days, required this.onChanged});
+  const DayPicker(
+      {super.key,
+      required this.days,
+      required this.onChanged,
+      this.selectedDate});
 
   @override
   State<DayPicker> createState() => _DayPickerState();
@@ -37,8 +42,14 @@ class _DayPickerState extends State<DayPicker> {
   @override
   void initState() {
     super.initState();
-    itemDayPicker = widget.days.first;
-    goTo(0, Movement.none);
+    var element = widget.days
+        .where((e) =>
+            e.date.year == widget.selectedDate!.year &&
+            e.date.month == widget.selectedDate!.month &&
+            e.date.day == widget.selectedDate!.day)
+        .first;
+    var index = widget.days.indexOf(element);
+    goTo(index, Movement.none);
   }
 
   @override

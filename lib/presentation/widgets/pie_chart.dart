@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 class BarChartSample2 extends StatefulWidget {
   BarChartSample2({super.key});
-  final Color leftBarColor = Colors.blue;
+  final Color leftBarColor = Colors.yellow;
   final Color rightBarColor = Colors.green;
+  final Color centerBarColor = Colors.blue;
+
   final Color avgColor = Colors.orange;
   @override
   State<StatefulWidget> createState() => BarChartSample2State();
@@ -21,9 +23,9 @@ class BarChartSample2State extends State<BarChartSample2> {
   @override
   void initState() {
     super.initState();
-    final barGroup1 = makeGroupData(0, 5, 12);
-    final barGroup2 = makeGroupData(1, 16, 12);
-    final barGroup3 = makeGroupData(2, 18, 5);
+    final barGroup1 = makeGroupData(0, 5, 12, 6);
+    final barGroup2 = makeGroupData(1, 16, 12, 5);
+    final barGroup3 = makeGroupData(2, 18, 5, 2);
 
     final items = [
       barGroup1,
@@ -178,7 +180,7 @@ class BarChartSample2State extends State<BarChartSample2> {
     );
   }
 
-  BarChartGroupData makeGroupData(int x, double y1, double y2) {
+  BarChartGroupData makeGroupData(int x, double y1, double y2, double y3) {
     return BarChartGroupData(
       barsSpace: 4,
       x: x,
@@ -189,56 +191,14 @@ class BarChartSample2State extends State<BarChartSample2> {
           width: width,
         ),
         BarChartRodData(
+          toY: y3,
+          color: widget.centerBarColor,
+          width: width,
+        ),
+        BarChartRodData(
           toY: y2,
           color: widget.rightBarColor,
           width: width,
-        ),
-      ],
-    );
-  }
-
-  Widget makeTransactionsIcon() {
-    const width = 4.5;
-    const space = 3.5;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(
-          width: width,
-          height: 10,
-          color: Colors.white,
-        ),
-        const SizedBox(
-          width: space,
-        ),
-        Container(
-          width: width,
-          height: 28,
-          color: Colors.white,
-        ),
-        const SizedBox(
-          width: space,
-        ),
-        Container(
-          width: width,
-          height: 42,
-          color: Colors.white,
-        ),
-        const SizedBox(
-          width: space,
-        ),
-        Container(
-          width: width,
-          height: 28,
-          color: Colors.white,
-        ),
-        const SizedBox(
-          width: space,
-        ),
-        Container(
-          width: width,
-          height: 10,
-          color: Colors.white,
         ),
       ],
     );

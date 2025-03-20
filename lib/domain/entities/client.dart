@@ -9,14 +9,17 @@ class Client {
   final String? phone;
   final String? email;
   final String? direction;
+  final String? docId;
 
   Client(
       {required this.id,
       required this.name,
       this.phone,
       this.email,
-      this.direction});
+      this.direction,
+      this.docId});
 
-  factory Client.fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
+  factory Client.fromJson(Map<String, dynamic> json, String docId) =>
+      _$ClientFromJson(json, docId);
   Map<String, dynamic> toJson() => _$ClientToJson(this);
 }

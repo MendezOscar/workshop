@@ -9,6 +9,7 @@ import '../../../infrastructure/services/firestore_repair_sheet_details_service.
 import '../../bloc/repair_sheet_details_bloc.dart';
 import '../../widgets/new_assignment_details.dart';
 import '../../widgets/process_assignment.dart';
+import '../main/home.dart';
 
 class AssignmentView extends StatefulWidget {
   final bool isProcessed;
@@ -33,9 +34,15 @@ class _AssignmentViewState extends State<AssignmentView> {
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyHomePage(
+                              title: "Bienvenido",
+                              index: 1,
+                            )),
+                  )),
           backgroundColor: const Color(0XFF0879A6),
           title: Text(
             widget.repairSheetHeader.name,
@@ -171,6 +178,7 @@ class _AssignmentViewState extends State<AssignmentView> {
                                   message:
                                       'Es posible que tu ficha haya sido cancelada, finalizada o elimanda.')
                               : AssignmentDetailsView(
+                                  status: widget.repairSheetHeader.status,
                                   repairSheetHeaderId:
                                       widget.repairSheetHeader.docId!,
                                   repairSheetDetails:

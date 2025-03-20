@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rvmsmart/presentation/pages/administration/inventory_list.dart';
 import 'client_list.dart';
 import 'mechanic_list.dart';
 import 'spare_part_list.dart';
@@ -20,7 +21,7 @@ class _AdministrationState extends State<Administration> {
         child: Column(
           children: [
             ListTile(
-              leading: const Icon(Icons.person, color: Color(0XFF0879A6)),
+              leading: const Icon(Icons.group, color: Color(0XFF0879A6)),
               title: const Text('Clientes'),
               trailing: IconButton(
                   onPressed: () {
@@ -80,7 +81,14 @@ class _AdministrationState extends State<Administration> {
                   color: Color(0XFF0879A6)),
               title: const Text('Inventario'),
               trailing: IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.chevron_right)),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const InventoryList()),
+                    );
+                  },
+                  icon: const Icon(Icons.chevron_right)),
             )
           ],
         ),

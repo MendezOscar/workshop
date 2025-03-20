@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rvmsmart/presentation/pages/administration/new_mechanic.dart';
+import '../../widgets/information_card.dart';
+import 'new_mechanic.dart';
 import '../../../domain/entities/mechanic.dart';
 import '../../../infrastructure/services/firestore_mechanics_service.dart';
 import '../../bloc/mechanic_bloc.dart';
@@ -15,6 +16,15 @@ class MechanicList extends StatefulWidget {
 
 class _MechanicListState extends State<MechanicList> {
   List<Mechanic> searchedItems = [];
+  int counter = 0;
+  int keyCode = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    counter = 0;
+    keyCode = DateTime.now().millisecond.hashCode;
+  }
 
   void filter(String searchText, List<Mechanic> items) {
     List<Mechanic> results = [];
@@ -35,6 +45,7 @@ class _MechanicListState extends State<MechanicList> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
+      key: Key(counter.toString() + keyCode.toString()),
       providers: [
         BlocProvider<MechanicBloc>(
             create: (context) => MechanicBloc(FirestoreMechanicsService())
@@ -42,6 +53,10 @@ class _MechanicListState extends State<MechanicList> {
       ],
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           backgroundColor: const Color(0XFF0879A6),
           title: const Text(
             'Lista de mecanicos',
@@ -79,7 +94,7 @@ class _MechanicListState extends State<MechanicList> {
                             pathImage: '',
                             title: 'Sin infromacion para mostrar',
                             message:
-                                'No existen cleintes creados o ocurrio algun error en la carga de datos')
+                                'No existen datos creados o ocurrio algun error en la carga de datos')
                         : Column(
                             children: [
                               Padding(
@@ -88,10 +103,23 @@ class _MechanicListState extends State<MechanicList> {
                                   onChanged: (value) {
                                     filter(value, mechanics);
                                   },
-                                  decoration: const InputDecoration(
-                                      labelText: "Buscar por nombre",
-                                      labelStyle:
-                                          TextStyle(color: Colors.black)),
+                                  decoration: InputDecoration(
+                                    suffixIcon: const Icon(Icons.search),
+                                    labelText: "Buscar por nombre",
+                                    fillColor: Colors.white,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               ListView.builder(
@@ -101,26 +129,23 @@ class _MechanicListState extends State<MechanicList> {
                                   itemCount: searchedItems.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return ListTile(
-                                        leading: Text((index + 1).toString(),
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                        title: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(searchedItems[index].name),
-                                            Text(searchedItems[index].phone ??
-                                                ""),
-                                          ],
-                                        ),
-                                        trailing: IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            )));
+                                    return InformationCard(
+                                      name: searchedItems[index].name,
+                                      phone: searchedItems[index].phone,
+                                      descriptor: "Mecanico",
+                                      onDelete: () {
+                                        {
+                                          BlocProvider.of<MechanicBloc>(context)
+                                              .add(DeleteMechanic(
+                                                  searchedItems[index].docId!));
+                                          setState(() {
+                                            searchedItems = [];
+                                            counter++;
+                                            keyCode = DateTime.now().hashCode;
+                                          });
+                                        }
+                                      },
+                                    );
                                   }),
                             ],
                           );

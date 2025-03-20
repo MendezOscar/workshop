@@ -10,7 +10,7 @@ class RepairSheetHeaderBloc
     extends Bloc<RepairSheetHeaderEvent, RepairSheetHeaderState> {
   final FirestoreRepairSheetHeaderService _firestoreService;
 
-  RepairSheetHeaderBloc(this._firestoreService, int status)
+  RepairSheetHeaderBloc(this._firestoreService, int status, DateTime date)
       : super(RepairSheetHeaderInitial()) {
     on<LoadRepairSheetHeader>((event, emit) async {
       try {
@@ -19,6 +19,19 @@ class RepairSheetHeaderBloc
             await _firestoreService.getRepairSheetHeaderByStatus(status).first;
         emit(RepairSheetHeaderStateLoaded(todos));
       } catch (e) {
+        emit(RepairSheetHeaderStateError('Failed to load client.'));
+      }
+    });
+
+    on<LoadRepairSheetHeaderByStatusAndDate>((event, emit) async {
+      try {
+        emit(RepairSheetHeaderStateLoading());
+        final todos = await _firestoreService
+            .getRepairSheetHeaderByStatusAndDate(event.status, event.date)
+            .first;
+        emit(RepairSheetHeaderStateLoaded(todos));
+      } catch (e) {
+        debugPrint(e.toString());
         emit(RepairSheetHeaderStateError('Failed to load client.'));
       }
     });

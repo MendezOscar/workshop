@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/mechanic.dart';
 import '../../../infrastructure/services/firestore_mechanics_service.dart';
@@ -65,6 +66,10 @@ class _NewMechanicState extends State<NewMechanic> {
                   const SizedBox(height: 10),
                   TextField(
                     controller: phone,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Telefono',

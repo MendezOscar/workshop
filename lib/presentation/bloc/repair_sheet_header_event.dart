@@ -5,6 +5,13 @@ abstract class RepairSheetHeaderEvent {}
 
 class LoadRepairSheetHeader extends RepairSheetHeaderEvent {}
 
+class LoadRepairSheetHeaderByStatusAndDate extends RepairSheetHeaderEvent {
+  final int status;
+  final DateTime date;
+
+  LoadRepairSheetHeaderByStatusAndDate(this.status, this.date);
+}
+
 class AddRepairSheetHeader extends RepairSheetHeaderEvent {
   final RepairSheetHeader repairSheetHeader;
 

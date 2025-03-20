@@ -19,8 +19,8 @@ class ProcessAssignment extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RepairSheetHeaderBloc>(
-          create: (context) =>
-              RepairSheetHeaderBloc(FirestoreRepairSheetHeaderService(), 0),
+          create: (context) => RepairSheetHeaderBloc(
+              FirestoreRepairSheetHeaderService(), 0, DateTime.now()),
         ),
       ],
       child: Center(
@@ -73,6 +73,7 @@ class ProcessAssignment extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => const MyHomePage(
                                       title: "Bienvenido",
+                                      index: 1,
                                     )),
                           );
                         },
@@ -103,6 +104,7 @@ class ProcessAssignment extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => const MyHomePage(
                                       title: "Bienvenido",
+                                      index: 1,
                                     )),
                           );
                         },

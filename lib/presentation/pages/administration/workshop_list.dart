@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rvmsmart/presentation/pages/administration/new_workshop.dart';
 import '../../../domain/entities/workshop.dart';
 import '../../../infrastructure/services/firestore_workshop_service.dart';
 import '../../bloc/workshop_bloc.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/information_card.dart';
 
 class WorkshopList extends StatefulWidget {
   const WorkshopList({super.key});
@@ -14,6 +16,15 @@ class WorkshopList extends StatefulWidget {
 
 class _WorkshopListState extends State<WorkshopList> {
   List<Workshop> searchedItems = [];
+  int counter = 0;
+  int keyCode = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    counter = 0;
+    keyCode = DateTime.now().millisecond.hashCode;
+  }
 
   void filter(String searchText, List<Workshop> items) {
     List<Workshop> results = [];
@@ -34,6 +45,7 @@ class _WorkshopListState extends State<WorkshopList> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
+      key: Key(counter.toString() + keyCode.toString()),
       providers: [
         BlocProvider<WorkshopBloc>(
             create: (context) =>
@@ -41,6 +53,10 @@ class _WorkshopListState extends State<WorkshopList> {
       ],
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           backgroundColor: const Color(0XFF0879A6),
           title: const Text(
             'Lista de talleres',
@@ -50,11 +66,10 @@ class _WorkshopListState extends State<WorkshopList> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0XFF0879A6),
           onPressed: () {
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(
-            //       builder: (context) => const NewAssignment()),
-            // );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const NewWorkshop()),
+            );
           },
           child: const Icon(
             Icons.add,
@@ -79,7 +94,7 @@ class _WorkshopListState extends State<WorkshopList> {
                             pathImage: '',
                             title: 'Sin infromacion para mostrar',
                             message:
-                                'No existen cleintes creados o ocurrio algun error en la carga de datos')
+                                'No existen datos creados o ocurrio algun error en la carga de datos')
                         : Column(
                             children: [
                               Padding(
@@ -88,10 +103,23 @@ class _WorkshopListState extends State<WorkshopList> {
                                   onChanged: (value) {
                                     filter(value, workshops);
                                   },
-                                  decoration: const InputDecoration(
-                                      labelText: "Buscar por nombre",
-                                      labelStyle:
-                                          TextStyle(color: Colors.black)),
+                                  decoration: InputDecoration(
+                                    suffixIcon: const Icon(Icons.search),
+                                    labelText: "Buscar por nombre",
+                                    fillColor: Colors.white,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               ListView.builder(
@@ -101,27 +129,24 @@ class _WorkshopListState extends State<WorkshopList> {
                                   itemCount: searchedItems.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return ListTile(
-                                        leading: Text((index + 1).toString(),
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                        title: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(searchedItems[index].name),
-                                            Text(searchedItems[index]
-                                                    .direction ??
-                                                ""),
-                                          ],
-                                        ),
-                                        trailing: IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            )));
+                                    return InformationCard(
+                                      name: searchedItems[index].name,
+                                      email: searchedItems[index].email,
+                                      phone: searchedItems[index].phone,
+                                      descriptor: "Taller",
+                                      onDelete: () {
+                                        {
+                                          BlocProvider.of<WorkshopBloc>(context)
+                                              .add(DeleteWorkshop(
+                                                  searchedItems[index].docId!));
+                                          setState(() {
+                                            searchedItems = [];
+                                            counter++;
+                                            keyCode = DateTime.now().hashCode;
+                                          });
+                                        }
+                                      },
+                                    );
                                   }),
                             ],
                           );

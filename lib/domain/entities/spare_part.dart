@@ -9,16 +9,17 @@ class SparePart {
   final String? brand;
   final String? description;
   final int price;
+  final String? docId;
 
-  SparePart({
-    required this.id,
-    required this.name,
-    this.brand,
-    this.description,
-    required this.price,
-  });
+  SparePart(
+      {required this.id,
+      required this.name,
+      this.brand,
+      this.description,
+      required this.price,
+      this.docId});
 
-  factory SparePart.fromJson(Map<String, dynamic> json) =>
-      _$SparePartFromJson(json);
+  factory SparePart.fromJson(Map<String, dynamic> json, String docId) =>
+      _$SparePartFromJson(json, docId);
   Map<String, dynamic> toJson() => _$SparePartToJson(this);
 }

@@ -103,8 +103,8 @@ class _NewAssignmentDetailsState extends State<NewAssignmentDetails> {
               FirestoreRepairSheetDetailsService(), widget.repairSheetHeaderId),
         ),
         BlocProvider<RepairSheetHeaderBloc>(
-          create: (context) =>
-              RepairSheetHeaderBloc(FirestoreRepairSheetHeaderService(), 0),
+          create: (context) => RepairSheetHeaderBloc(
+              FirestoreRepairSheetHeaderService(), 0, DateTime.now()),
         )
       ],
       child: Column(
@@ -277,6 +277,7 @@ class _NewAssignmentDetailsState extends State<NewAssignmentDetails> {
                           MaterialPageRoute(
                               builder: (context) => const MyHomePage(
                                     title: "Bienvenido",
+                                    index: 1,
                                   )),
                         );
                       },

@@ -15,6 +15,25 @@ class FirestoreRepairSheetHeaderService {
     });
   }
 
+  Stream<List<RepairSheetHeader>> getRepairSheetHeaderByStatusAndDate(
+      int status, DateTime date) {
+    return _repairSheetHeaderCollection
+        .where("status", isEqualTo: status)
+        .where("entryDate",
+            isGreaterThan:
+                DateTime(date.year, date.month, date.day, 0, 0, 0, 0, 0))
+        .where("entryDate",
+            isLessThan:
+                DateTime(date.year, date.month, date.day, 23, 59, 59, 59, 59))
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return RepairSheetHeader.fromJson(data, doc.id);
+      }).toList();
+    });
+  }
+
   Stream<List<RepairSheetHeader>> getRepairSheetHeaderByStatus(int status) {
     return _repairSheetHeaderCollection
         .where("status", isEqualTo: status)

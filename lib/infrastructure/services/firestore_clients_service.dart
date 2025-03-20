@@ -10,7 +10,7 @@ class FirestoreClientsService {
     return _clientsCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return Client.fromJson(data);
+        return Client.fromJson(data, doc.id);
       }).toList();
     });
   }

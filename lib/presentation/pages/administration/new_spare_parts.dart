@@ -3,13 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rvmsmart/domain/entities/spare_part.dart';
-import 'package:rvmsmart/infrastructure/services/firestore_spare_part_service.dart';
-import 'package:rvmsmart/presentation/bloc/spare_part_bloc.dart';
-import 'package:rvmsmart/presentation/pages/administration/spare_part_list.dart';
-import '../../../domain/entities/client.dart';
-import 'client_list.dart';
-import '../../bloc/client_bloc.dart';
+import '../../../domain/entities/spare_part.dart';
+import '../../../infrastructure/services/firestore_spare_part_service.dart';
+import '../../bloc/spare_part_bloc.dart';
+import 'spare_part_list.dart';
 
 class NewSparePart extends StatefulWidget {
   const NewSparePart({super.key});
@@ -41,7 +38,10 @@ class _NewSparePartState extends State<NewSparePart> {
       appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const SparePartList()),
+            ),
           ),
           backgroundColor: const Color(0XFF0879A6),
           title: const Text(

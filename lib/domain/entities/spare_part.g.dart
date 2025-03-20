@@ -6,13 +6,14 @@ part of 'spare_part.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SparePart _$SparePartFromJson(Map<String, dynamic> json) => SparePart(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      brand: json['brand'] as String?,
-      description: json['description'] as String?,
-      price: (json['price'] as num).toInt(),
-    );
+SparePart _$SparePartFromJson(Map<String, dynamic> json, String docId) =>
+    SparePart(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        brand: json['brand'] as String?,
+        description: json['description'] as String?,
+        price: (json['price'] as num).toInt(),
+        docId: docId);
 
 Map<String, dynamic> _$SparePartToJson(SparePart instance) => <String, dynamic>{
       'id': instance.id,

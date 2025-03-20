@@ -6,9 +6,10 @@ import '../administration/administration.dart';
 import '../progress/progress.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, this.index});
 
   final String title;
+  final int? index;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -16,12 +17,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  int counter = 0;
   static final List<Widget> _widgetOptions = [
     const Progress(),
     const AssignmentTypes(),
     const Administration(),
   ];
+
+  @override
+  void initState() {
+    counter = 0;
+    super.initState();
+    _selectedIndex = widget.index ?? 0;
+  }
+
   void _onItemTapped(int index) {
+    counter++;
     setState(() {
       _selectedIndex = index;
     });
@@ -30,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: Key(widget.index.toString() + counter.toString()),
         appBar: AppBar(
           backgroundColor: const Color(0XFF0879A6),
           title: Text(
